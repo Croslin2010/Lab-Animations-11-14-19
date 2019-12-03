@@ -54,26 +54,54 @@ var setup = function(array2D)
    .attr("transform","translate(25,"+margins.top+")")
    .call(yAxis)
  
- drawArray(array2D, xScale, yScale, 0)
+ var arrays = d3.select("#graph")
+                   .selectAll("circle")
+                   .data(array2D[0].quizes)
+                   .enter()
+                   .append("circle")
+ 
+ drawArray(array2D, xScale, yScale,0)
+ CreateButtons(array2D, xScale, yScale)
+
 
 }
 
 var drawArray = function(array2D, xScale, yScale, index)
 {
+    console.log (array2D[index].quizes)
+    
     var arrays = d3.select("#graph")
                    .selectAll("circle")
-                   .data(array2D[index])
-                   .enter()
-                   .append("circle")
+                   .data(array2D[index].quizes)
+                    .transition()
+                 //  .enter()
+                //   .append("circle")
                    .attr("cx", function(num, index)
                         {
                        return xScale(index);
                    })
-                   .attr("cy", function(num)
+                   .attr("cy", function(quiz)
                         {
-                       return yScale(num);
+                       return yScale(quiz.grade);
                    })
                    .attr("r",3)
 }
                          
-                         
+var CreateButtons = function (PenData, xScale, yScale)
+{
+    d3.select('body')
+    .selectAll('button')
+    .data(PenData)
+    .enter()
+    .append('button')
+    .text(function (penguin)
+         {return penguin.picture})
+    .attr("class",function(Penguin)
+          {return Penguin.picture})
+    .on("click",function(penguin,index)
+        {
+        //d3.select("svg")
+        //.selectAll("circle")
+       // .remove()
+        drawArray(PenData, xScale, yScale, index)})
+}
